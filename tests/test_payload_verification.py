@@ -2,10 +2,10 @@
 
 import unittest
 from base64 import b64decode
-from appstoreserverlibrary.models.Environment import Environment
-from appstoreserverlibrary.models.NotificationHistoryRequest import NotificationTypeV2
+from appstoreserverlibraryasync.models.Environment import Environment
+from appstoreserverlibraryasync.models.NotificationHistoryRequest import NotificationTypeV2
 
-from appstoreserverlibrary.signed_data_verifier import VerificationException, VerificationStatus, SignedDataVerifier
+from appstoreserverlibraryasync.signed_data_verifier import VerificationException, VerificationStatus, SignedDataVerifier
 
 from tests.util import get_signed_data_verifier, read_data_from_file
 

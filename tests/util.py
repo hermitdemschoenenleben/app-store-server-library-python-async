@@ -8,9 +8,9 @@ import os
 
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import serialization
-from appstoreserverlibrary.models.Environment import Environment
+from appstoreserverlibraryasync.models.Environment import Environment
 
-from appstoreserverlibrary.signed_data_verifier import SignedDataVerifier
+from appstoreserverlibraryasync.signed_data_verifier import SignedDataVerifier
 
 def create_signed_data_from_json(path: str) -> str:
     data = read_data_from_file(path)
@@ -26,7 +26,7 @@ def read_data_from_file(path: str) -> str:
     full_path = os.path.join(path)
     with open(full_path, mode='r') as test_file:
         return test_file.read()
-    
+
 def read_data_from_binary_file(path: str) -> str:
     full_path = os.path.join(path)
     with open(full_path, mode='rb') as test_file:

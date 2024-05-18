@@ -1,7 +1,7 @@
 # Copyright (c) 2023 Apple Inc. Licensed under MIT License.
 
 import unittest
-from appstoreserverlibrary.promotional_offer import PromotionalOfferSignatureCreator
+from appstoreserverlibraryasync.promotional_offer import PromotionalOfferSignatureCreator
 
 from tests.util import read_data_from_binary_file
 from uuid import UUID

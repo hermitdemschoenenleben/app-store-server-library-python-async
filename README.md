@@ -14,7 +14,7 @@ The Python server library for the [App Store Server API](https://developer.apple
 
 ### pip
 ```sh
-pip install app-store-server-library-async
+pip install app-store-server-library-python-async
 ```
 
 ## Documentation
@@ -36,13 +36,16 @@ Download and store the root certificates found in the Apple Root Certificates se
 ### API Usage
 
 ```python
-from appstoreserverlibrary.api_client import AsyncAppStoreServerAPIClient, APIException
-from appstoreserverlibrary.models.Environment import Environment
+from appstoreserverlibraryasync.api_client import AsyncAppStoreServerAPIClient, APIException
+from appstoreserverlibraryasync.models.Environment import Environment
+
 
 def read_private_key(file_path):
     with open(file_path, "r") as file:
         return file.read()
-private_key = read_private_key("/path/to/key/SubscriptionKey_ABCDEFGHIJ.p8") # Implementation will vary
+
+
+private_key = read_private_key("/path/to/key/SubscriptionKey_ABCDEFGHIJ.p8")  # Implementation will vary
 
 key_id = "ABCDEFGHIJ"
 issuer_id = "99b16628-15e4-4668-972b-eeff55eeff55"
@@ -50,8 +53,10 @@ bundle_id = "com.example"
 environment = Environment.SANDBOX
 
 client = AsyncAppStoreServerAPIClient(private_key, key_id, issuer_id, bundle_id, environment)
+
+
 async def main():
-    try:    
+    try:
         response = await client.request_test_notification()
         print(response)
     except APIException as e:
@@ -61,8 +66,9 @@ async def main():
 ### Verification Usage
 
 ```python
-from appstoreserverlibrary.models.Environment import Environment
-from appstoreserverlibrary.signed_data_verifier import VerificationException, SignedDataVerifier
+from appstoreserverlibraryasync.models.Environment import Environment
+from appstoreserverlibraryasync.signed_data_verifier import VerificationException, SignedDataVerifier
+
 
 def load_root_certificates():
     cert_paths = [
@@ -79,13 +85,15 @@ def load_root_certificates():
         certs.append(cert)
     return certs
 
+
 async def main():
     root_certificates = load_root_certificates()
     enable_online_checks = True
     bundle_id = "com.example"
     environment = Environment.SANDBOX
     app_apple_id = None  # appAppleId must be provided for the Production environment
-    signed_data_verifier = SignedDataVerifier(root_certificates, enable_online_checks, environment, bundle_id, app_apple_id)
+    signed_data_verifier = SignedDataVerifier(root_certificates, enable_online_checks, environment, bundle_id,
+                                              app_apple_id)
 
     try:
         signed_notification = "ey.."
@@ -98,17 +106,19 @@ async def main():
 ### Receipt Usage
 
 ```python
-from appstoreserverlibrary.api_client import AsyncAppStoreServerAPIClient, APIException
-from appstoreserverlibrary.models.Environment import Environment
-from appstoreserverlibrary.receipt_utility import ReceiptUtility
-from appstoreserverlibrary.models.HistoryResponse import HistoryResponse
-from appstoreserverlibrary.models.TransactionHistoryRequest import TransactionHistoryRequest, ProductType, Order
+from appstoreserverlibraryasync.api_client import AsyncAppStoreServerAPIClient, APIException
+from appstoreserverlibraryasync.models.Environment import Environment
+from appstoreserverlibraryasync.receipt_utility import ReceiptUtility
+from appstoreserverlibraryasync.models.HistoryResponse import HistoryResponse
+from appstoreserverlibraryasync.models.TransactionHistoryRequest import TransactionHistoryRequest, ProductType, Order
+
 
 def read_private_key(file_path):
     with open(file_path, "r") as file:
         return file.read()
 
-private_key = read_private_key("/path/to/key/SubscriptionKey_ABCDEFGHIJ.p8") # Implementation will vary
+
+private_key = read_private_key("/path/to/key/SubscriptionKey_ABCDEFGHIJ.p8")  # Implementation will vary
 
 key_id = "ABCDEFGHIJ"
 issuer_id = "99b16628-15e4-4668-972b-eeff55eeff55"
@@ -118,8 +128,10 @@ environment = Environment.SANDBOX
 client = AsyncAppStoreServerAPIClient(private_key, key_id, issuer_id, bundle_id, environment)
 receipt_util = ReceiptUtility()
 app_receipt = "MI.."
+
+
 async def extract_transaction_receipts_from_id(app_receipt):
-    try:    
+    try:
         transaction_id = receipt_util.extract_transaction_id_from_app_receipt(app_receipt)
         if transaction_id != None:
             transactions = []
@@ -142,14 +154,16 @@ async def extract_transaction_receipts_from_id(app_receipt):
 ### Promotional Offer Signature Creation
 
 ```python
-from appstoreserverlibrary.promotional_offer import PromotionalOfferSignatureCreator
+from appstoreserverlibraryasync.promotional_offer import PromotionalOfferSignatureCreator
 import time
+
 
 def read_private_key(file_path):
     with open(file_path, "r") as file:
         return file.read()
-    
-private_key = read_private_key("/path/to/key/SubscriptionKey_ABCDEFGHIJ.p8") # Implementation will vary
+
+
+private_key = read_private_key("/path/to/key/SubscriptionKey_ABCDEFGHIJ.p8")  # Implementation will vary
 
 key_id = "ABCDEFGHIJ"
 bundle_id = "com.example"
@@ -160,13 +174,15 @@ product_id = "<product_id>"
 subscription_offer_id = "<subscription_offer_id>"
 application_username = "<application_username>"
 nonce = "<nonce>"
-timestamp = round(time.time()*1000)
-base64_encoded_signature = promotion_code_signature_generator.create_signature(product_id, subscription_offer_id, application_username, nonce, timestamp)
+timestamp = round(time.time() * 1000)
+base64_encoded_signature = promotion_code_signature_generator.create_signature(product_id, subscription_offer_id,
+                                                                               application_username, nonce, timestamp)
 ```
 ### Pydantic Example
 Apple has interestingly chosen to use `attrs` library. Here is an example of how you can convert it to `Pydantic`.
+
 ```python
-from appstoreserverlibrary.models.JWSTransactionDecodedPayload import JWSTransactionDecodedPayload,Type,InAppOwnershipType,RevocationReason,OfferType,Environment,TransactionReason,OfferDiscountType
+from appstoreserverlibraryasync.models.JWSTransactionDecodedPayload import JWSTransactionDecodedPayload, Type,InAppOwnershipType, RevocationReason, OfferType, Environment, TransactionReason, OfferDiscountType
 from pydantic import BaseModel
 import attr
 from typing import Optional
@@ -178,7 +194,7 @@ example_payload = JWSTransactionDecodedPayload(
     bundleId="com.example.app",
     productId="com.example.product",
     subscriptionGroupIdentifier="12345678",
-    purchaseDate=1622548800000, 
+    purchaseDate=1622548800000,
     originalPurchaseDate=1622548800000,
     expiresDate=1625130800000,
     quantity=1,
@@ -242,6 +258,7 @@ class PydanticJWSTransactionDecodedPayload(BaseModel):
     price: Optional[int] = None
     offerDiscountType: Optional[str] = None
     rawOfferDiscountType: Optional[str] = None
+
 
 # Convert to Pydantic
 pydanctic_payload = PydanticJWSTransactionDecodedPayload(**attr.asdict(example_payload))

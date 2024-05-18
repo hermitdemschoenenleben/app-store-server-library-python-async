@@ -1,7 +1,7 @@
 # Copyright (c) 2023 Apple Inc. Licensed under MIT License.
 
 import unittest
-from appstoreserverlibrary.receipt_utility import ReceiptUtility
+from appstoreserverlibraryasync.receipt_utility import ReceiptUtility
 
 from tests.util import read_data_from_file
 

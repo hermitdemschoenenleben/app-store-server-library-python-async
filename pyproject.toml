@@ -1,6 +1,6 @@
 [project]
 name = "app-store-server-library-python-async"
-version = "0.1.0"
+version = "0.1.1"
 description = "app-store-server-library-python-async"
 authors = [
     {name = "Bahadır Araz", email = "bahadiraraz@protonmail.com"},

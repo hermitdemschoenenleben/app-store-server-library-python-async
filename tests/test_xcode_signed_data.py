@@ -1,14 +1,14 @@
 # Copyright (c) 2023 Apple Inc. Licensed under MIT License.
 
 import unittest
-from appstoreserverlibrary.models.AutoRenewStatus import AutoRenewStatus
-from appstoreserverlibrary.models.Environment import Environment
-from appstoreserverlibrary.models.InAppOwnershipType import InAppOwnershipType
-from appstoreserverlibrary.models.OfferType import OfferType
-from appstoreserverlibrary.models.TransactionReason import TransactionReason
-from appstoreserverlibrary.models.Type import Type
-from appstoreserverlibrary.receipt_utility import ReceiptUtility
-from appstoreserverlibrary.signed_data_verifier import VerificationException
+from appstoreserverlibraryasync.models.AutoRenewStatus import AutoRenewStatus
+from appstoreserverlibraryasync.models.Environment import Environment
+from appstoreserverlibraryasync.models.InAppOwnershipType import InAppOwnershipType
+from appstoreserverlibraryasync.models.OfferType import OfferType
+from appstoreserverlibraryasync.models.TransactionReason import TransactionReason
+from appstoreserverlibraryasync.models.Type import Type
+from appstoreserverlibraryasync.receipt_utility import ReceiptUtility
+from appstoreserverlibraryasync.signed_data_verifier import VerificationException
 
 from tests.util import get_signed_data_verifier, read_data_from_file
 

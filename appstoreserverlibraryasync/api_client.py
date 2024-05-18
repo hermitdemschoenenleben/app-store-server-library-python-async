@@ -11,7 +11,7 @@ import jwt
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 
-from appstoreserverlibrary.models.LibraryUtility import _get_cattrs_converter
+from appstoreserverlibraryasync.models.LibraryUtility import _get_cattrs_converter
 from .models.CheckTestNotificationResponse import CheckTestNotificationResponse
 from .models.ConsumptionRequest import ConsumptionRequest
 

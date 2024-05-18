@@ -14,8 +14,8 @@ from cryptography.hazmat.primitives.hashes import SHA1, SHA256
 from cryptography.x509 import ocsp, oid
 from OpenSSL import crypto
 
-from appstoreserverlibrary.models.AppTransaction import AppTransaction
-from appstoreserverlibrary.models.LibraryUtility import _get_cattrs_converter
+from appstoreserverlibraryasync.models.AppTransaction import AppTransaction
+from appstoreserverlibraryasync.models.LibraryUtility import _get_cattrs_converter
 
 from .models.Environment import Environment
 from .models.ResponseBodyV2DecodedPayload import ResponseBodyV2DecodedPayload

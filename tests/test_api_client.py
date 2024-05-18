@@ -3,41 +3,41 @@
 from typing import Any, Dict, List, Union
 import unittest
 
-from requests import Response
-from appstoreserverlibrary.api_client import APIError, APIException, AppStoreServerAPIClient
-from appstoreserverlibrary.models.AccountTenure import AccountTenure
-from appstoreserverlibrary.models.AutoRenewStatus import AutoRenewStatus
-from appstoreserverlibrary.models.ConsumptionRequest import ConsumptionRequest
-from appstoreserverlibrary.models.ConsumptionStatus import ConsumptionStatus
-from appstoreserverlibrary.models.DeliveryStatus import DeliveryStatus
-from appstoreserverlibrary.models.Environment import Environment
-from appstoreserverlibrary.models.ExpirationIntent import ExpirationIntent
-from appstoreserverlibrary.models.ExtendReasonCode import ExtendReasonCode
-from appstoreserverlibrary.models.ExtendRenewalDateRequest import ExtendRenewalDateRequest
-from appstoreserverlibrary.models.InAppOwnershipType import InAppOwnershipType
-from appstoreserverlibrary.models.LastTransactionsItem import LastTransactionsItem
-from appstoreserverlibrary.models.LifetimeDollarsPurchased import LifetimeDollarsPurchased
-from appstoreserverlibrary.models.LifetimeDollarsRefunded import LifetimeDollarsRefunded
-from appstoreserverlibrary.models.MassExtendRenewalDateRequest import MassExtendRenewalDateRequest
-from appstoreserverlibrary.models.NotificationHistoryRequest import NotificationHistoryRequest
-from appstoreserverlibrary.models.NotificationHistoryResponseItem import NotificationHistoryResponseItem
-from appstoreserverlibrary.models.NotificationTypeV2 import NotificationTypeV2
-from appstoreserverlibrary.models.OfferType import OfferType
-from appstoreserverlibrary.models.OrderLookupStatus import OrderLookupStatus
-from appstoreserverlibrary.models.Platform import Platform
-from appstoreserverlibrary.models.PlayTime import PlayTime
-from appstoreserverlibrary.models.PriceIncreaseStatus import PriceIncreaseStatus
-from appstoreserverlibrary.models.RefundPreference import RefundPreference
-from appstoreserverlibrary.models.RevocationReason import RevocationReason
-from appstoreserverlibrary.models.SendAttemptItem import SendAttemptItem
-from appstoreserverlibrary.models.SendAttemptResult import SendAttemptResult
-from appstoreserverlibrary.models.Status import Status
-from appstoreserverlibrary.models.SubscriptionGroupIdentifierItem import SubscriptionGroupIdentifierItem
-from appstoreserverlibrary.models.Subtype import Subtype
-from appstoreserverlibrary.models.TransactionHistoryRequest import Order, ProductType, TransactionHistoryRequest
-from appstoreserverlibrary.models.TransactionReason import TransactionReason
-from appstoreserverlibrary.models.Type import Type
-from appstoreserverlibrary.models.UserStatus import UserStatus
+
+from appstoreserverlibraryasync.api_client import APIError, APIException, AsyncAppStoreServerAPIClient
+from appstoreserverlibraryasync.models.AccountTenure import AccountTenure
+from appstoreserverlibraryasync.models.AutoRenewStatus import AutoRenewStatus
+from appstoreserverlibraryasync.models.ConsumptionRequest import ConsumptionRequest
+from appstoreserverlibraryasync.models.ConsumptionStatus import ConsumptionStatus
+from appstoreserverlibraryasync.models.DeliveryStatus import DeliveryStatus
+from appstoreserverlibraryasync.models.Environment import Environment
+from appstoreserverlibraryasync.models.ExpirationIntent import ExpirationIntent
+from appstoreserverlibraryasync.models.ExtendReasonCode import ExtendReasonCode
+from appstoreserverlibraryasync.models.ExtendRenewalDateRequest import ExtendRenewalDateRequest
+from appstoreserverlibraryasync.models.InAppOwnershipType import InAppOwnershipType
+from appstoreserverlibraryasync.models.LastTransactionsItem import LastTransactionsItem
+from appstoreserverlibraryasync.models.LifetimeDollarsPurchased import LifetimeDollarsPurchased
+from appstoreserverlibraryasync.models.LifetimeDollarsRefunded import LifetimeDollarsRefunded
+from appstoreserverlibraryasync.models.MassExtendRenewalDateRequest import MassExtendRenewalDateRequest
+from appstoreserverlibraryasync.models.NotificationHistoryRequest import NotificationHistoryRequest
+from appstoreserverlibraryasync.models.NotificationHistoryResponseItem import NotificationHistoryResponseItem
+from appstoreserverlibraryasync.models.NotificationTypeV2 import NotificationTypeV2
+from appstoreserverlibraryasync.models.OfferType import OfferType
+from appstoreserverlibraryasync.models.OrderLookupStatus import OrderLookupStatus
+from appstoreserverlibraryasync.models.Platform import Platform
+from appstoreserverlibraryasync.models.PlayTime import PlayTime
+from appstoreserverlibraryasync.models.PriceIncreaseStatus import PriceIncreaseStatus
+from appstoreserverlibraryasync.models.RefundPreference import RefundPreference
+from appstoreserverlibraryasync.models.RevocationReason import RevocationReason
+from appstoreserverlibraryasync.models.SendAttemptItem import SendAttemptItem
+from appstoreserverlibraryasync.models.SendAttemptResult import SendAttemptResult
+from appstoreserverlibraryasync.models.Status import Status
+from appstoreserverlibraryasync.models.SubscriptionGroupIdentifierItem import SubscriptionGroupIdentifierItem
+from appstoreserverlibraryasync.models.Subtype import Subtype
+from appstoreserverlibraryasync.models.TransactionHistoryRequest import Order, ProductType, TransactionHistoryRequest
+from appstoreserverlibraryasync.models.TransactionReason import TransactionReason
+from appstoreserverlibraryasync.models.Type import Type
+from appstoreserverlibraryasync.models.UserStatus import UserStatus
 
 from tests.util import decode_json_from_signed_date, read_data_from_binary_file, read_data_from_file
 
@@ -48,9 +48,9 @@ class DecodedPayloads(unittest.TestCase):
         client = self.get_client_with_body_from_file('tests/resources/models/extendRenewalDateForAllActiveSubscribersResponse.json',
                                            'POST',
                                            'https://local-testing-base-url/inApps/v1/subscriptions/extend/mass',
-                                           {}, 
+                                           {},
                                            {'extendByDays': 45, 'extendReasonCode': 1, 'requestIdentifier': 'fdf964a4-233b-486c-aac1-97d8d52688ac', 'storefrontCountryCodes': ['USA', 'MEX'], 'productId': 'com.example.productId'})
-        
+
         extend_renewal_date_request = MassExtendRenewalDateRequest(
              extendByDays=45,
              extendReasonCode=ExtendReasonCode.CUSTOMER_SATISFACTION,
@@ -87,7 +87,7 @@ class DecodedPayloads(unittest.TestCase):
     def test_get_all_subscription_statuses(self):
         client = self.get_client_with_body_from_file('tests/resources/models/getAllSubscriptionStatusesResponse.json',
                                            'GET',
-                                           'https://local-testing-base-url/inApps/v1/subscriptions/4321', 
+                                           'https://local-testing-base-url/inApps/v1/subscriptions/4321',
                                            {'status': [2, 1]},
                                            None)
 
@@ -135,8 +135,8 @@ class DecodedPayloads(unittest.TestCase):
     def test_get_refund_history(self):
         client = self.get_client_with_body_from_file('tests/resources/models/getRefundHistoryResponse.json',
                                            'GET',
-                                           'https://local-testing-base-url/inApps/v2/refund/lookup/555555', 
-                                           {'revision': ['revision_input']}, 
+                                           'https://local-testing-base-url/inApps/v2/refund/lookup/555555',
+                                           {'revision': ['revision_input']},
                                            None)
 
         refund_history_response = client.get_refund_history('555555', 'revision_input')
@@ -149,7 +149,7 @@ class DecodedPayloads(unittest.TestCase):
     def test_get_status_of_subscription_renewal_date_extensions(self):
         client = self.get_client_with_body_from_file('tests/resources/models/getStatusOfSubscriptionRenewalDateExtensionsResponse.json',
                                            'GET',
-                                           'https://local-testing-base-url/inApps/v1/subscriptions/extend/mass/20fba8a0-2b80-4a7d-a17f-85c1854727f8/com.example.product', 
+                                           'https://local-testing-base-url/inApps/v1/subscriptions/extend/mass/20fba8a0-2b80-4a7d-a17f-85c1854727f8/com.example.product',
                                            {},
                                            None)
 
@@ -182,7 +182,7 @@ class DecodedPayloads(unittest.TestCase):
     def test_get_notification_history(self):
         client = self.get_client_with_body_from_file('tests/resources/models/getNotificationHistoryResponse.json',
                                            'POST',
-                                           'https://local-testing-base-url/inApps/v1/notifications/history', 
+                                           'https://local-testing-base-url/inApps/v1/notifications/history',
                                            {'paginationToken': ['a036bc0e-52b8-4bee-82fc-8c24cb6715d6']},
                                            {'startDate': 1698148900000, 'endDate': 1698148950000, 'notificationType': 'SUBSCRIBED', 'notificationSubtype': 'INITIAL_BUY', 'transactionId': '999733843', 'onlyFailures': True})
 
@@ -194,7 +194,7 @@ class DecodedPayloads(unittest.TestCase):
             transactionId='999733843',
             onlyFailures=True
         )
-        
+
         notification_history_response = client.get_notification_history('a036bc0e-52b8-4bee-82fc-8c24cb6715d6', notification_history_request)
 
         self.assertIsNotNone(notification_history_response)
@@ -223,7 +223,7 @@ class DecodedPayloads(unittest.TestCase):
     def test_get_transaction_history(self):
         client = self.get_client_with_body_from_file('tests/resources/models/transactionHistoryResponse.json',
                                            'GET',
-                                           'https://local-testing-base-url/inApps/v1/history/1234', 
+                                           'https://local-testing-base-url/inApps/v1/history/1234',
                                            {'revision': ['revision_input'],
                                             'startDate': ['123455'],
                                             'endDate': ['123456'],
@@ -260,7 +260,7 @@ class DecodedPayloads(unittest.TestCase):
     def test_get_transaction_info(self):
         client = self.get_client_with_body_from_file('tests/resources/models/transactionInfoResponse.json',
                                            'GET',
-                                           'https://local-testing-base-url/inApps/v1/transactions/1234', 
+                                           'https://local-testing-base-url/inApps/v1/transactions/1234',
                                            {},
                                            None)
 
@@ -298,7 +298,7 @@ class DecodedPayloads(unittest.TestCase):
     def test_send_consumption_data(self):
         client = self.get_client_with_body(b'',
                                            'PUT',
-                                           'https://local-testing-base-url/inApps/v1/transactions/consumption/49571273', 
+                                           'https://local-testing-base-url/inApps/v1/transactions/consumption/49571273',
                                            {},
                                            {'customerConsented': True,
                                             'consumptionStatus': 1,
@@ -345,19 +345,19 @@ class DecodedPayloads(unittest.TestCase):
             self.assertEqual(APIError.GENERAL_INTERNAL, e.api_error)
             self.assertEqual("An unknown error occurred.", e.error_message)
             return
-        
+
         self.assertFalse(True)
 
     def test_xcode_not_supported_error(self):
         try:
             signing_key = self.get_signing_key()
-            AppStoreServerAPIClient(signing_key, 'keyId', 'issuerId', 'com.example', Environment.XCODE)
+            AsyncAppStoreServerAPIClient(signing_key, 'keyId', 'issuerId', 'com.example', Environment.XCODE)
         except ValueError as e:
             self.assertEqual("Xcode is not a supported environment for an AppStoreServerAPIClient", e.args[0])
             return
 
         self.assertFalse(True)
-    
+
     def test_api_too_many_requests(self):
         client = self.get_client_with_body_from_file('tests/resources/models/apiTooManyRequestsException.json',
                                                      'POST',
@@ -373,7 +373,7 @@ class DecodedPayloads(unittest.TestCase):
             self.assertEqual(APIError.RATE_LIMIT_EXCEEDED, e.api_error)
             self.assertEqual("Rate limit exceeded.", e.error_message)
             return
-        
+
         self.assertFalse(True)
 
     def test_unknown_error(self):
@@ -391,13 +391,13 @@ class DecodedPayloads(unittest.TestCase):
             self.assertIsNone(e.api_error)
             self.assertEqual("Testing error.", e.error_message)
             return
-        
+
         self.assertFalse(True)
 
     def test_get_transaction_history_with_unknown_environment(self):
         client = self.get_client_with_body_from_file('tests/resources/models/transactionHistoryResponseWithMalformedEnvironment.json',
                                            'GET',
-                                           'https://local-testing-base-url/inApps/v1/history/1234', 
+                                           'https://local-testing-base-url/inApps/v1/history/1234',
                                            {'revision': ['revision_input'],
                                             'startDate': ['123455'],
                                             'endDate': ['123456'],
@@ -428,7 +428,7 @@ class DecodedPayloads(unittest.TestCase):
     def test_get_transaction_history_with_malformed_app_apple_id(self):
         client = self.get_client_with_body_from_file('tests/resources/models/transactionHistoryResponseWithMalformedAppAppleId.json',
                                            'GET',
-                                           'https://local-testing-base-url/inApps/v1/history/1234', 
+                                           'https://local-testing-base-url/inApps/v1/history/1234',
                                            {'revision': ['revision_input'],
                                             'startDate': ['123455'],
                                             'endDate': ['123456'],
@@ -455,12 +455,12 @@ class DecodedPayloads(unittest.TestCase):
             client.get_transaction_history('1234', 'revision_input', request)
         except Exception:
             return
-        
+
         self.assertFalse(True)
 
     def get_signing_key(self):
         return read_data_from_binary_file('tests/resources/certs/testSigningKey.p8')
-    
+
     def get_client_with_body(self, body: str, expected_method: str, expected_url: str, expected_params: Dict[str, Union[str, List[str]]], expected_json: Dict[str, Any], status_code: int = 200):
         signing_key = self.get_signing_key()
         client = AppStoreServerAPIClient(signing_key, 'keyId', 'issuerId', 'com.example', Environment.LOCAL_TESTING)
