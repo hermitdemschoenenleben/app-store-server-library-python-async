@@ -21,95 +21,95 @@ REAL_APPLE_SIGNING_CERTIFICATE_BASE64_ENCODED = "MIIEMDCCA7agAwIBAgIQaPoPldvpSoE
 
 EFFECTIVE_DATE = 1681312846
 
-class X509Verification(unittest.TestCase):
-    def test_valid_chain_without_ocsp(self):
+class X509Verification(unittest.IsolatedAsyncioTestCase):
+    async def test_valid_chain_without_ocsp(self):
         verifier = _ChainVerifier([b64decode(ROOT_CA_BASE64_ENCODED)], False)
-        public_key = verifier.verify_chain([
+        public_key = await verifier.verify_chain([
             LEAF_CERT_BASE64_ENCODED,
             INTERMEDIATE_CA_BASE64_ENCODED,
             ROOT_CA_BASE64_ENCODED
         ], False, EFFECTIVE_DATE)
         self.assertEqual(LEAF_CERT_PUBLIC_KEY, public_key)
 
-    def test_valid_chain_invalid_intermediate_OID_without_OCSP(self):
+    async def test_valid_chain_invalid_intermediate_OID_without_OCSP(self):
         verifier = _ChainVerifier([b64decode(ROOT_CA_BASE64_ENCODED)], False)
         with self.assertRaises(VerificationException) as context:
-            verifier.verify_chain([
+            await verifier.verify_chain([
                 LEAF_CERT_FOR_INTERMEDIATE_CA_INVALID_OID_BASE64_ENCODED,
                 INTERMEDIATE_CA_INVALID_OID_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
             ], False, EFFECTIVE_DATE)
         self.assertEqual(VerificationStatus.VERIFICATION_FAILURE, context.exception.status)
 
-    def test_valid_chain_invalid_leaf_OID_without_OCSP(self):
+    async def test_valid_chain_invalid_leaf_OID_without_OCSP(self):
         verifier = _ChainVerifier([b64decode(ROOT_CA_BASE64_ENCODED)], False)
         with self.assertRaises(VerificationException) as context:
-            verifier.verify_chain([
+            await verifier.verify_chain([
                 LEAF_CERT_INVALID_OID_BASE64_ENCODED,
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
             ], False, EFFECTIVE_DATE)
         self.assertEqual(VerificationStatus.VERIFICATION_FAILURE, context.exception.status)
 
-    def test_invalid_chain_length(self):
+    async def test_invalid_chain_length(self):
         verifier = _ChainVerifier([b64decode(ROOT_CA_BASE64_ENCODED)], False)
         with self.assertRaises(VerificationException) as context:
-            verifier.verify_chain([INTERMEDIATE_CA_BASE64_ENCODED, ROOT_CA_BASE64_ENCODED], False, EFFECTIVE_DATE)
+            await verifier.verify_chain([INTERMEDIATE_CA_BASE64_ENCODED, ROOT_CA_BASE64_ENCODED], False, EFFECTIVE_DATE)
         self.assertIn('Verification failed with status INVALID_CHAIN_LENGTH', str(context.exception))
 
-    def test_invalid_base64_in_certificate_list(self):
+    async def test_invalid_base64_in_certificate_list(self):
         verifier = _ChainVerifier([b64decode(ROOT_CA_BASE64_ENCODED)])
         with self.assertRaises(VerificationException) as context:
-            verifier.verify_chain([
+            await verifier.verify_chain([
                 "abc",
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
             ], False, EFFECTIVE_DATE)
         self.assertEqual(VerificationStatus.INVALID_CERTIFICATE, context.exception.status)
 
-    def test_invalid_data_in_certificate_list(self):
+    async def test_invalid_data_in_certificate_list(self):
         verifier = _ChainVerifier([b64decode(ROOT_CA_BASE64_ENCODED)], False)
         with self.assertRaises(VerificationException) as context:
-            verifier.verify_chain([
+            await verifier.verify_chain([
                 str(b64encode(b"abc")),
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
             ], False, EFFECTIVE_DATE)
         self.assertEqual(VerificationStatus.INVALID_CERTIFICATE, context.exception.status)
-    def test_malformed_root_cert(self):
+    async def test_malformed_root_cert(self):
         verifier = _ChainVerifier([b64decode(b64encode(b"abc"))])
         with self.assertRaises(Exception) as context:
-            verifier.verify_chain([
+            await verifier.verify_chain([
                 LEAF_CERT_BASE64_ENCODED,
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
             ], False, EFFECTIVE_DATE)
         self.assertEqual(VerificationStatus.INVALID_CERTIFICATE, context.exception.status)
 
-    def test_chain_different_than_root_certificate(self):
+    async def test_chain_different_than_root_certificate(self):
         verifier = _ChainVerifier([b64decode(REAL_APPLE_ROOT_BASE64_ENCODED)], False)
 
         with self.assertRaises(Exception) as context:
-            verifier.verify_chain([
+            await verifier.verify_chain([
                 LEAF_CERT_BASE64_ENCODED,
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
             ], False, EFFECTIVE_DATE)
         self.assertEqual(VerificationStatus.VERIFICATION_FAILURE, context.exception.status)
 
-    def test_valid_expired_chain(self):
+    async def test_valid_expired_chain(self):
         verifier = _ChainVerifier([b64decode(ROOT_CA_BASE64_ENCODED)], False)
         with self.assertRaises(VerificationException) as context:
-            verifier.verify_chain([
+            await verifier.verify_chain([
                 LEAF_CERT_BASE64_ENCODED,
                 INTERMEDIATE_CA_BASE64_ENCODED,
                 ROOT_CA_BASE64_ENCODED
             ], False, 2280946846)
         self.assertEqual(VerificationStatus.VERIFICATION_FAILURE, context.exception.status)
 
-    def test_apple_chain_is_valid_with_ocsp_and_strict(self):
+    async def test_apple_chain_is_valid_with_ocsp_and_strict(self):
         verifier = _ChainVerifier([b64decode(REAL_APPLE_ROOT_BASE64_ENCODED)])
-        verifier.verify_chain([
+        await verifier.verify_chain([
             REAL_APPLE_SIGNING_CERTIFICATE_BASE64_ENCODED,
             REAL_APPLE_INTERMEDIATE_BASE64_ENCODED,
             REAL_APPLE_ROOT_BASE64_ENCODED

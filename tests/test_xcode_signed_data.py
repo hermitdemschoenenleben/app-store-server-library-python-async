@@ -14,12 +14,12 @@ from tests.util import get_signed_data_verifier, read_data_from_file
 
 XCODE_BUNDLE_ID = "com.example.naturelab.backyardbirds.example"
 
-class ReceiptUtilityTest(unittest.TestCase):
-    def test_xcode_signed_app_transaction(self):
+class ReceiptUtilityTest(unittest.IsolatedAsyncioTestCase):
+    async def test_xcode_signed_app_transaction(self):
         verifier = get_signed_data_verifier(Environment.XCODE, XCODE_BUNDLE_ID)
         encoded_app_transaction = read_data_from_file("tests/resources/xcode/xcode-signed-app-transaction")
 
-        app_transaction = verifier.verify_and_decode_app_transaction(encoded_app_transaction)
+        app_transaction = await verifier.verify_and_decode_app_transaction(encoded_app_transaction)
 
         self.assertIsNotNone(app_transaction)
         self.assertIsNone(app_transaction.appAppleId)
@@ -34,11 +34,11 @@ class ReceiptUtilityTest(unittest.TestCase):
         self.assertEqual(Environment.XCODE, app_transaction.receiptType)
         self.assertEqual("Xcode", app_transaction.rawReceiptType)
 
-    def test_xcode_signed_transaction(self):
+    async def test_xcode_signed_transaction(self):
         verifier = get_signed_data_verifier(Environment.XCODE, XCODE_BUNDLE_ID)
         encoded_transaction = read_data_from_file("tests/resources/xcode/xcode-signed-transaction")
 
-        transaction = verifier.verify_and_decode_signed_transaction(encoded_transaction)
+        transaction = await verifier.verify_and_decode_signed_transaction(encoded_transaction)
 
         self.assertEqual("0", transaction.originalTransactionId)
         self.assertEqual("0", transaction.transactionId)
@@ -69,11 +69,11 @@ class ReceiptUtilityTest(unittest.TestCase):
         self.assertEqual(TransactionReason.PURCHASE, transaction.transactionReason)
         self.assertEqual("PURCHASE", transaction.rawTransactionReason)
 
-    def test_xcode_signed_renewal_info(self):
+    async def test_xcode_signed_renewal_info(self):
         verifier = get_signed_data_verifier(Environment.XCODE, XCODE_BUNDLE_ID)
         encoded_renewal_info = read_data_from_file("tests/resources/xcode/xcode-signed-renewal-info")
 
-        renewal_info = verifier.verify_and_decode_renewal_info(encoded_renewal_info)
+        renewal_info = await verifier.verify_and_decode_renewal_info(encoded_renewal_info)
 
         self.assertIsNone(renewal_info.expirationIntent)
         self.assertEqual("0", renewal_info.originalTransactionId)
@@ -92,11 +92,11 @@ class ReceiptUtilityTest(unittest.TestCase):
         self.assertEqual(1697679936049, renewal_info.recentSubscriptionStartDate)
         self.assertEqual(1700358336049, renewal_info.renewalDate)
 
-    def test_xcode_signed_app_transaction_with_production_environment(self):
+    async def test_xcode_signed_app_transaction_with_production_environment(self):
         verifier = get_signed_data_verifier(Environment.PRODUCTION, XCODE_BUNDLE_ID)
         encoded_app_transaction = read_data_from_file("tests/resources/xcode/xcode-signed-app-transaction")
         try:
-            verifier.verify_and_decode_app_transaction(encoded_app_transaction)
+            await verifier.verify_and_decode_app_transaction(encoded_app_transaction)
         except VerificationException:
             return
         self.assertFalse(True)

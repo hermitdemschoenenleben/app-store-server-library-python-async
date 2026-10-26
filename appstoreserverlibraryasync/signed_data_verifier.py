@@ -165,6 +165,8 @@ class SignedDataVerifier:
 
 
 class _ChainVerifier:
+    MAX_SKEW = datetime.timedelta(seconds=60)  # Allowable clock skew when validating OCSP response dates
+
     def __init__(self, root_certificates: List[bytes], enable_strict_checks=True):
         self.enable_strict_checks = enable_strict_checks
         self.root_certificates = root_certificates
@@ -291,11 +293,16 @@ class _ChainVerifier:
                                 cert.to_cryptography(), issuer.to_cryptography(), single_response.hash_algorithm
                             )
                             req = builder.build()
+                            now = datetime.datetime.now(datetime.timezone.utc)
                             if (
                                     single_response.certificate_status == ocsp.OCSPCertStatus.GOOD
                                     and single_response.serial_number == req.serial_number
                                     and single_response.issuer_key_hash == req.issuer_key_hash
                                     and single_response.issuer_name_hash == req.issuer_name_hash
+                                    and single_response.this_update_utc is not None
+                                    and now + _ChainVerifier.MAX_SKEW >= single_response.this_update_utc
+                                    and single_response.next_update_utc is not None
+                                    and single_response.next_update_utc >= now - _ChainVerifier.MAX_SKEW
                             ):
                                 return
 

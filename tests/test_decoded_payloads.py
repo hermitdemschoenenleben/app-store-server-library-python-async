@@ -19,13 +19,13 @@ from appstoreserverlibraryasync.models.Type import Type
 
 from tests.util import create_signed_data_from_json, get_default_signed_data_verifier, get_signed_data_verifier
 
-class DecodedPayloads(unittest.TestCase):
-    def test_app_transaction_decoding(self):
+class DecodedPayloads(unittest.IsolatedAsyncioTestCase):
+    async def test_app_transaction_decoding(self):
         signed_app_transaction = create_signed_data_from_json('tests/resources/models/appTransaction.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
 
-        app_transaction = signed_data_verifier.verify_and_decode_app_transaction(signed_app_transaction)
+        app_transaction = await signed_data_verifier.verify_and_decode_app_transaction(signed_app_transaction)
         self.assertEqual(Environment.LOCAL_TESTING, app_transaction.receiptType)
         self.assertEqual("LocalTesting", app_transaction.rawReceiptType)
         self.assertEqual(531412, app_transaction.appAppleId)
@@ -39,12 +39,12 @@ class DecodedPayloads(unittest.TestCase):
         self.assertEqual("48ccfa42-7431-4f22-9908-7e88983e105a", app_transaction.deviceVerificationNonce)
         self.assertEqual(1698148700000, app_transaction.preorderDate)
 
-    def test_transaction_decoding(self):
+    async def test_transaction_decoding(self):
         signed_transaction = create_signed_data_from_json('tests/resources/models/signedTransaction.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
 
-        transaction = signed_data_verifier.verify_and_decode_signed_transaction(signed_transaction)
+        transaction = await signed_data_verifier.verify_and_decode_signed_transaction(signed_transaction)
 
         self.assertEqual("12345", transaction.originalTransactionId)
         self.assertEqual("23456", transaction.transactionId)
@@ -81,12 +81,12 @@ class DecodedPayloads(unittest.TestCase):
         self.assertEqual("PAY_AS_YOU_GO", transaction.rawOfferDiscountType)
 
 
-    def test_renewal_info_decoding(self):
+    async def test_renewal_info_decoding(self):
         signed_renewal_info = create_signed_data_from_json('tests/resources/models/signedRenewalInfo.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
 
-        renewal_info = signed_data_verifier.verify_and_decode_renewal_info(signed_renewal_info)
+        renewal_info = await signed_data_verifier.verify_and_decode_renewal_info(signed_renewal_info)
 
         self.assertEqual(ExpirationIntent.CUSTOMER_CANCELLED, renewal_info.expirationIntent)
         self.assertEqual(1, renewal_info.rawExpirationIntent)
@@ -108,12 +108,12 @@ class DecodedPayloads(unittest.TestCase):
         self.assertEqual(1698148800000, renewal_info.recentSubscriptionStartDate)
         self.assertEqual(1698148850000, renewal_info.renewalDate)
 
-    def test_notification_decoding(self):
+    async def test_notification_decoding(self):
         signed_notification = create_signed_data_from_json('tests/resources/models/signedNotification.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
 
-        notification = signed_data_verifier.verify_and_decode_notification(signed_notification)
+        notification = await signed_data_verifier.verify_and_decode_notification(signed_notification)
 
         self.assertEqual(NotificationTypeV2.SUBSCRIBED, notification.notificationType)
         self.assertEqual("SUBSCRIBED", notification.rawNotificationType)
@@ -137,12 +137,12 @@ class DecodedPayloads(unittest.TestCase):
         self.assertIsNone(notification.data.consumptionRequestReason)
         self.assertIsNone(notification.data.rawConsumptionRequestReason)
 
-    def test_consumption_request_notification_decoding(self):
+    async def test_consumption_request_notification_decoding(self):
         signed_notification = create_signed_data_from_json('tests/resources/models/signedConsumptionRequestNotification.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
 
-        notification = signed_data_verifier.verify_and_decode_notification(signed_notification)
+        notification = await signed_data_verifier.verify_and_decode_notification(signed_notification)
 
         self.assertEqual(NotificationTypeV2.CONSUMPTION_REQUEST, notification.notificationType)
         self.assertEqual("CONSUMPTION_REQUEST", notification.rawNotificationType)
@@ -166,12 +166,12 @@ class DecodedPayloads(unittest.TestCase):
         self.assertEqual(ConsumptionRequestReason.UNINTENDED_PURCHASE, notification.data.consumptionRequestReason)
         self.assertEqual("UNINTENDED_PURCHASE", notification.data.rawConsumptionRequestReason)
 
-    def test_summary_notification_decoding(self):
+    async def test_summary_notification_decoding(self):
         signed_summary_notification = create_signed_data_from_json('tests/resources/models/signedSummaryNotification.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
 
-        notification = signed_data_verifier.verify_and_decode_notification(signed_summary_notification)
+        notification = await signed_data_verifier.verify_and_decode_notification(signed_summary_notification)
 
         self.assertEqual(NotificationTypeV2.RENEWAL_EXTENSION, notification.notificationType)
         self.assertEqual("RENEWAL_EXTENSION", notification.rawNotificationType)
@@ -193,7 +193,7 @@ class DecodedPayloads(unittest.TestCase):
         self.assertEqual(5, notification.summary.succeededCount)
         self.assertEqual(2, notification.summary.failedCount)
 
-    def test_external_purchase_token_notification_decoding(self):
+    async def test_external_purchase_token_notification_decoding(self):
         signed_external_purchase_token_notification = create_signed_data_from_json('tests/resources/models/signedExternalPurchaseTokenNotification.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
@@ -205,7 +205,7 @@ class DecodedPayloads(unittest.TestCase):
 
         signed_data_verifier._verify_notification = check_environment_and_bundle_id
 
-        notification = signed_data_verifier.verify_and_decode_notification(signed_external_purchase_token_notification)
+        notification = await signed_data_verifier.verify_and_decode_notification(signed_external_purchase_token_notification)
 
         self.assertEqual(NotificationTypeV2.EXTERNAL_PURCHASE_TOKEN, notification.notificationType)
         self.assertEqual("EXTERNAL_PURCHASE_TOKEN", notification.rawNotificationType)
@@ -222,7 +222,7 @@ class DecodedPayloads(unittest.TestCase):
         self.assertEqual(55555, notification.externalPurchaseToken.appAppleId)
         self.assertEqual("com.example", notification.externalPurchaseToken.bundleId)
 
-    def test_external_purchase_token_sandbox_notification_decoding(self):
+    async def test_external_purchase_token_sandbox_notification_decoding(self):
         signed_external_purchase_token_notification = create_signed_data_from_json('tests/resources/models/signedExternalPurchaseTokenSandboxNotification.json')
 
         signed_data_verifier = get_default_signed_data_verifier()
@@ -234,7 +234,7 @@ class DecodedPayloads(unittest.TestCase):
 
         signed_data_verifier._verify_notification = check_environment_and_bundle_id
 
-        notification = signed_data_verifier.verify_and_decode_notification(signed_external_purchase_token_notification)
+        notification = await signed_data_verifier.verify_and_decode_notification(signed_external_purchase_token_notification)
 
         self.assertEqual(NotificationTypeV2.EXTERNAL_PURCHASE_TOKEN, notification.notificationType)
         self.assertEqual("EXTERNAL_PURCHASE_TOKEN", notification.rawNotificationType)
